@@ -24,7 +24,7 @@ function Board({ xIsNext, squares, onPlay }) {
     } else {
       nextSquares[i] = "O";
     }
-    onPlay(nextSquares);
+    onPlay(nextSquares, i);
   }
 
   const { winner, line } = calculateWinner(squares);
@@ -84,14 +84,19 @@ function Board({ xIsNext, squares, onPlay }) {
 }
 
 export default function Game() {
-  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [history, setHistory] = useState([
+    { squares: Array(9).fill(null), lastMove: null }
+  ]);
   const [currentMove, setCurrentMove] = useState(0);
   const [isAscending, setIsAscending] = useState(true);
   const xIsNext = currentMove % 2 === 0;
-  const currentSquares = history[currentMove];
+  const currentSquares = history[currentMove].squares;
 
-  function handlePlay(nextSquares) {
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+  function handlePlay(nextSquares, moveIndex) {
+    const nextHistory = [
+      ...history.slice(0, currentMove + 1),
+      { squares: nextSquares, lastMove: moveIndex }
+    ];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
   }
@@ -104,10 +109,14 @@ export default function Game() {
     setIsAscending(!isAscending);
   }
 
-  const moves = history.map((squares, move) => {
+  const boardSize = 3;
+  const moves = history.map((step, move) => {
     let description;
     if (move > 0) {
-      description = "move #" + move;
+      const index = step.lastMove;
+      const row = Math.floor(index / boardSize) + 1;
+      const col = (index % boardSize) + 1;
+      description = `move #${move} (row ${row}, column ${col})`;
     } else {
       description = "game start";
     }
@@ -132,7 +141,13 @@ export default function Game() {
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board
+          xIsNext={xIsNext}
+          squares={currentSquares}
+          onPlay={(nextSquares, moveIndex) =>
+            handlePlay(nextSquares, moveIndex)
+          }
+        />
       </div>
       <div className="game-info">
         <button onClick={toggleSortOrder}>
