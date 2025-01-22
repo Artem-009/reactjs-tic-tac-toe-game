@@ -1,4 +1,4 @@
-Tic-Tac-Toe game built in React.js by following the tutorial at [react.dev/learn/tutorial-tic-tac-toe](https://react.dev/learn/tutorial-tic-tac-toe)
+Tic-Tac-Toe game built on React.js by following the tutorial at [react.dev/learn/tutorial-tic-tac-toe](https://react.dev/learn/tutorial-tic-tac-toe)
 
 At the end of tutorial there's was *some ideas for improvements*, here is what I added from those ideas:
 1. For the current move only, show “You are at move #…” instead of a button. ✔
